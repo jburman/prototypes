@@ -1,0 +1,9 @@
+﻿<div class="keyboard-row" style="padding-left: @PadLeft;">@ChildContent</div>
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public string PadLeft { get; set; } = "0em";
+}

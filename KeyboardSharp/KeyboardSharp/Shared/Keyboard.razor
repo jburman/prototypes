@@ -1,0 +1,38 @@
+﻿@inject KeyboardService KeyboardService
+
+<div class="keyboard">
+    <CascadingValue Value="ShowAltValue">
+        @ChildContent
+    </CascadingValue>
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    private bool ShowAltValue = false;
+
+    public void OnKeyDown(KeyboardEventArgs args)
+    {
+        if (args.ShiftKey)
+        {
+            ShowAltValue = true;
+            StateHasChanged();
+        }
+    }
+
+    public void OnKeyUp(KeyboardEventArgs args)
+    {
+        if (!args.ShiftKey)
+        {
+            ShowAltValue = false;
+            StateHasChanged();
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        KeyboardService.KeyDown += OnKeyDown;
+        KeyboardService.KeyUp += OnKeyUp;
+    }
+}

@@ -1,0 +1,82 @@
+﻿@inject KeyboardService Keyboard
+
+<div class="keyboard-key @KeySizeClass()"
+     style="border: solid 1px gray; margin: 5px; background-color: @(BgColor); text-decoration: @(IsUnderlined ? "underline" : "none")">
+    @if (ShowAltValue && AltValue != null)
+    {
+        @AltValue
+    }
+    else
+    {
+        @Value
+    }
+</div>
+@code 
+{
+    [Parameter]
+    public KeySize KeySize { get; set; } = KeySize.Default;
+    [Parameter]
+    public bool IsUnderlined { get; set; } = false;
+    [Parameter]
+    public bool IsPlaceHolder { get; set; } = false;
+
+    [CascadingParameter]
+    public bool ShowAltValue { get; set; } = false;
+
+    private string BgColor = "white";
+
+    [Parameter]
+    public string Value { get; set; }
+    [Parameter]
+    public string AltValue { get; set; }
+    [Parameter]
+    public string KeyCode { get; set; } = null;
+
+    private string KeySizeClass() =>
+        KeySize switch
+        {
+            KeySize.Wide => "key wide",
+            KeySize.XWide => "key x-wide",
+            _ => "key"
+        };
+
+    private bool IsHighlighted(KeyboardEventArgs args) => (KeyCode, Value, AltValue) switch
+    {
+        var (keyCode, _, _) when keyCode != null && args.Code.Equals(keyCode, StringComparison.OrdinalIgnoreCase) => true,
+        var (_, value, altValue) when KeyCode is null && args.Key.Equals(value) => true,
+        var (_, value, altValue) when KeyCode is null && args.ShiftKey && args.Key.Equals(altValue) => true,
+        _ => false
+    };
+
+    public void OnKeyDown(KeyboardEventArgs args)
+    {
+        if (!args.Repeat)
+        {
+            string bgColor = IsHighlighted(args) ? "yellow" : "white";
+
+            if (bgColor != BgColor)
+            {
+                BgColor = bgColor;
+                StateHasChanged();
+            }
+        }
+    }
+
+    public void OnKeyUp(KeyboardEventArgs args)
+    {
+        if (IsHighlighted(args) && BgColor != "white")
+        {
+            BgColor = "white";
+            StateHasChanged();
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        if (!IsPlaceHolder)
+        {
+            Keyboard.KeyDown += OnKeyDown;
+            Keyboard.KeyUp += OnKeyUp;
+        }
+    }
+}
