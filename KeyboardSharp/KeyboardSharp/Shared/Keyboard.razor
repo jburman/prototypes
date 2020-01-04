@@ -14,7 +14,7 @@
 
     public void OnKeyDown(KeyboardEventArgs args)
     {
-        if (args.ShiftKey)
+        if (!args.Repeat && args.Code.StartsWith("Shift", StringComparison.OrdinalIgnoreCase))
         {
             ShowAltValue = true;
             StateHasChanged();
@@ -23,7 +23,7 @@
 
     public void OnKeyUp(KeyboardEventArgs args)
     {
-        if (!args.ShiftKey)
+        if (!args.ShiftKey && args.Code.StartsWith("Shift", StringComparison.OrdinalIgnoreCase))
         {
             ShowAltValue = false;
             StateHasChanged();

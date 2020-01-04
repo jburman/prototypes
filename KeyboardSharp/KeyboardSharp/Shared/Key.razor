@@ -1,7 +1,7 @@
 ﻿@inject KeyboardService Keyboard
 
 <div class="keyboard-key @KeySizeClass()"
-     style="border: solid 1px gray; margin: 5px; background-color: @(BgColor); text-decoration: @(IsUnderlined ? "underline" : "none")">
+     style="background-color: @(BgColor); @((IsAnchorKey ? "text-decoration: underline; font-weight: bold;" : ""))">
     @if (ShowAltValue && AltValue != null)
     {
         @AltValue
@@ -16,14 +16,18 @@
     [Parameter]
     public KeySize KeySize { get; set; } = KeySize.Default;
     [Parameter]
-    public bool IsUnderlined { get; set; } = false;
+    public bool IsAnchorKey { get; set; } = false;
     [Parameter]
     public bool IsPlaceHolder { get; set; } = false;
+    [Parameter]
+    public string DefaultBGColor { get; set; } = "#ffffff";
+    [Parameter]
+    public string HighlightColor { get; set; } = "yellow";
 
     [CascadingParameter]
     public bool ShowAltValue { get; set; } = false;
 
-    private string BgColor = "white";
+    private string BgColor;
 
     [Parameter]
     public string Value { get; set; }
@@ -43,8 +47,8 @@
     private bool IsHighlighted(KeyboardEventArgs args) => (KeyCode, Value, AltValue) switch
     {
         var (keyCode, _, _) when keyCode != null && args.Code.Equals(keyCode, StringComparison.OrdinalIgnoreCase) => true,
-        var (_, value, altValue) when KeyCode is null && args.Key.Equals(value) => true,
-        var (_, value, altValue) when KeyCode is null && args.ShiftKey && args.Key.Equals(altValue) => true,
+        var (_, value, _) when KeyCode is null && args.Key.Equals(value) => true,
+        var (_, _, altValue) when KeyCode is null && ShowAltValue && args.Key.Equals(altValue) => true,
         _ => false
     };
 
@@ -52,11 +56,9 @@
     {
         if (!args.Repeat)
         {
-            string bgColor = IsHighlighted(args) ? "yellow" : "white";
-
-            if (bgColor != BgColor)
+            if (IsHighlighted(args) && BgColor != HighlightColor)
             {
-                BgColor = bgColor;
+                BgColor = HighlightColor;
                 StateHasChanged();
             }
         }
@@ -64,15 +66,17 @@
 
     public void OnKeyUp(KeyboardEventArgs args)
     {
-        if (IsHighlighted(args) && BgColor != "white")
+        if (IsHighlighted(args) && BgColor != DefaultBGColor)
         {
-            BgColor = "white";
+            BgColor = DefaultBGColor;
             StateHasChanged();
         }
     }
 
     protected override void OnInitialized()
     {
+        BgColor = DefaultBGColor;
+
         if (!IsPlaceHolder)
         {
             Keyboard.KeyDown += OnKeyDown;

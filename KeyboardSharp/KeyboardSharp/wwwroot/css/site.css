@@ -194,6 +194,9 @@ app {
 .keyboard .key {
     width: 2em;
     height: 2em;
+    border: solid 1px gray;
+    margin: 5px;
+    border-radius: 4px;
 }
 
 .keyboard .key.wide {

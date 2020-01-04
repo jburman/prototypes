@@ -19,7 +19,7 @@
         if (ev.key !== "F12") {
             ev.preventDefault();
         }
-        console.info(ev);
+        //console.info(ev);
         window.keyboardComponent.invokeMethodAsync("OnKeyDown", toDotNetArg(ev));
 
         return false;
@@ -27,7 +27,7 @@
 
     document.addEventListener("keyup", function (ev) {
         ev.preventDefault();
-        console.info(ev);
+        //console.info(ev);
         window.keyboardComponent.invokeMethodAsync("OnKeyUp", toDotNetArg(ev));
 
         return false;
