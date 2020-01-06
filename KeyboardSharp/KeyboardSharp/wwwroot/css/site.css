@@ -206,3 +206,19 @@ app {
 .keyboard .key.x-wide {
     width: 12.5em;
 }
+
+.keyboard .key.disabled {
+    color: #cfcfcf;
+}
+
+.typed-values {
+    display: flex;
+    max-width: 55em;
+    overflow: hidden;
+    height: 4em;
+}
+
+.typed-values .value {
+    margin: 5px;
+    font-size: 3.2em;
+}

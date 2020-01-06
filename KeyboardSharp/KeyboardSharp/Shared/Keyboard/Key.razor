@@ -1,6 +1,7 @@
-﻿@inject KeyboardService Keyboard
+﻿@namespace KeyboardSharp
+@inject KeyboardService Keyboard
 
-<div class="keyboard-key @KeySizeClass()"
+<div class="keyboard-key @KeySizeClass() @(IsEnabled ? string.Empty : "disabled")"
      style="background-color: @(BgColor); @((IsAnchorKey ? "text-decoration: underline; font-weight: bold;" : ""))">
     @if (ShowAltValue && AltValue != null)
     {
@@ -26,6 +27,8 @@
 
     [CascadingParameter]
     public bool ShowAltValue { get; set; } = false;
+    [CascadingParameter]
+    public IKeyFilter KeyFilter { get; set; } = null;
 
     private string BgColor;
 
@@ -52,9 +55,17 @@
         _ => false
     };
 
+    private bool IsEnabled => (KeyFilter, ShowAltValue) switch
+    {
+        var (keyFilter, _) when keyFilter is null => true,
+        var (keyFilter, altValue) when altValue is true => keyFilter.IsAllowed(AltValue),
+        var (keyFilter, altValue) when altValue is false => keyFilter.IsAllowed(Value),
+        (_, _) => true
+    };
+
     public void OnKeyDown(KeyboardEventArgs args)
     {
-        if (!args.Repeat)
+        if (!args.Repeat && IsEnabled)
         {
             if (IsHighlighted(args) && BgColor != HighlightColor)
             {
@@ -66,10 +77,13 @@
 
     public void OnKeyUp(KeyboardEventArgs args)
     {
-        if (IsHighlighted(args) && BgColor != DefaultBGColor)
+        if (IsEnabled)
         {
-            BgColor = DefaultBGColor;
-            StateHasChanged();
+            if (IsHighlighted(args) && BgColor != DefaultBGColor)
+            {
+                BgColor = DefaultBGColor;
+                StateHasChanged();
+            }
         }
     }
 

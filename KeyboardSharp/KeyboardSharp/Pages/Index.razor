@@ -1,2 +1,15 @@
 ﻿@page "/"
-<USKeyboard></USKeyboard>
+<TypeDisplay></TypeDisplay>
+<hr />
+<USKeyboard KeyFilter="KeyFilter" ></USKeyboard>
+
+@code {
+    private IKeyFilter KeyFilter;
+
+    protected override void OnInitialized()
+    {
+        KeyFilter = new KeyFilter(new string[] { "f", "j" });
+
+        base.OnInitialized();
+    }
+}

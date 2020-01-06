@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
 
-namespace KeyboardSharp.Shared
+namespace KeyboardSharp
 {
     public delegate void KeyboardEvent(KeyboardEventArgs args);
 

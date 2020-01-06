@@ -1,4 +1,4 @@
-﻿namespace KeyboardSharp.Shared
+﻿namespace KeyboardSharp
 {
     public enum KeySize
     {

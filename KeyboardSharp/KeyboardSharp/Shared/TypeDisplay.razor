@@ -1,0 +1,40 @@
+﻿@namespace KeyboardSharp
+@inject KeyboardService KeyboardService
+
+<div class="typed-values">
+    @foreach(var val in TypedValues)
+    {
+        <div class="value">@val</div>
+    }
+</div>
+
+@code {
+    private const int MaxValues = 30;
+
+    private LinkedList<string> TypedValues { get; set; } = new LinkedList<string>();
+
+    private bool ShouldDisplay(string value) =>
+        value?.Length > 1 ? false : true;
+
+    public void OnKeyDown(KeyboardEventArgs args)
+    {
+        if (ShouldDisplay(args.Key))
+        {
+            TypedValues.AddFirst(args.Key);
+            if (TypedValues.Count > MaxValues)
+                TypedValues.RemoveLast();
+            StateHasChanged();
+        }
+    }
+
+    public void OnKeyUp(KeyboardEventArgs args)
+    {
+
+    }
+
+    protected override void OnInitialized()
+    {
+        KeyboardService.KeyDown += OnKeyDown;
+        KeyboardService.KeyUp += OnKeyUp;
+    }
+}
