@@ -1,8 +1,8 @@
 ﻿@namespace KeyboardSharp
 @inject KeyboardService Keyboard
 
-<div class="keyboard-key @KeySizeClass() @(IsEnabled ? string.Empty : "disabled")"
-     style="background-color: @(BgColor); @((IsAnchorKey ? "text-decoration: underline; font-weight: bold;" : ""))">
+<div class="keyboard-key @KeySizeClass() @KeyColorClass() @(IsPressed ? "pressed" : string.Empty) @(IsEnabled ? string.Empty : "disabled")"
+     style="@((IsAnchorKey ? "text-decoration: underline; font-weight: bold;" : ""))">
     @if (ShowAltValue && AltValue != null)
     {
         @AltValue
@@ -10,6 +10,10 @@
     else
     {
         @Value
+    }
+    @if(Finger != null && KeyFilter?.IsFingerLabelEnabled(Finger) == true)
+    {
+        <div class="key-label key-finger-@Finger">@Finger</div>
     }
 </div>
 @code 
@@ -19,18 +23,21 @@
     [Parameter]
     public bool IsAnchorKey { get; set; } = false;
     [Parameter]
+    public bool IsAltHand { get; set; } = false;
+    [Parameter]
     public bool IsPlaceHolder { get; set; } = false;
+    //[Parameter]
+    //public string HighlightColor { get; set; } = "yellow";
     [Parameter]
-    public string DefaultBGColor { get; set; } = "#ffffff";
-    [Parameter]
-    public string HighlightColor { get; set; } = "yellow";
+    public string Finger { get; set; } = null;
 
     [CascadingParameter]
     public bool ShowAltValue { get; set; } = false;
     [CascadingParameter]
     public IKeyFilter KeyFilter { get; set; } = null;
 
-    private string BgColor;
+    //private string BgColor;
+    private bool IsPressed = false;
 
     [Parameter]
     public string Value { get; set; }
@@ -47,6 +54,15 @@
             _ => "key"
         };
 
+    private string KeyColorClass() =>
+        (IsAltHand, IsAnchorKey) switch
+        {
+            (true, true) => "alt-hand anchor-finger",
+            (false, true) => "anchor-finger",
+            (true, _) => "alt-hand",
+            _ => string.Empty
+        };
+
     private bool IsHighlighted(KeyboardEventArgs args) => (KeyCode, Value, AltValue) switch
     {
         var (keyCode, _, _) when keyCode != null && args.Code.Equals(keyCode, StringComparison.OrdinalIgnoreCase) => true,
@@ -58,8 +74,8 @@
     private bool IsEnabled => (KeyFilter, ShowAltValue) switch
     {
         var (keyFilter, _) when keyFilter is null => true,
-        var (keyFilter, altValue) when altValue is true => keyFilter.IsAllowed(AltValue),
-        var (keyFilter, altValue) when altValue is false => keyFilter.IsAllowed(Value),
+        var (keyFilter, altValue) when altValue is true => keyFilter.IsKeyEnabled(AltValue),
+        var (keyFilter, altValue) when altValue is false => keyFilter.IsKeyEnabled(Value),
         (_, _) => true
     };
 
@@ -67,9 +83,10 @@
     {
         if (!args.Repeat && IsEnabled)
         {
-            if (IsHighlighted(args) && BgColor != HighlightColor)
+            if (IsHighlighted(args) && !IsPressed)
             {
-                BgColor = HighlightColor;
+                //BgColor = HighlightColor;
+                IsPressed = true;
                 StateHasChanged();
             }
         }
@@ -79,9 +96,10 @@
     {
         if (IsEnabled)
         {
-            if (IsHighlighted(args) && BgColor != DefaultBGColor)
+            if (IsHighlighted(args) && IsPressed)
             {
-                BgColor = DefaultBGColor;
+                //BgColor = DefaultBGColor;
+                IsPressed = false;
                 StateHasChanged();
             }
         }
@@ -89,7 +107,7 @@
 
     protected override void OnInitialized()
     {
-        BgColor = DefaultBGColor;
+        //BgColor = DefaultBGColor;
 
         if (!IsPlaceHolder)
         {

@@ -197,6 +197,7 @@ app {
     border: solid 1px gray;
     margin: 5px;
     border-radius: 4px;
+    position: relative;
 }
 
 .keyboard .key.wide {
@@ -211,6 +212,45 @@ app {
     color: #cfcfcf;
 }
 
+.keyboard .key.alt-hand {
+    background-color: #EFEFEF
+}
+
+.keyboard .key.anchor-finger {
+    background-color: #DEDEFF
+}
+
+.keyboard .key.pressed {
+    background-color: yellow;
+}
+
+.keyboard .key-label {
+    position: absolute;
+    font-size: 0.85em;
+    color: #ffffff;
+    font-weight: bold;
+    background-color: #8989ff;
+    border: 1px solid #555555;
+    padding: 0px 6px 0px 6px;
+    border-radius: 12px;
+    left: 1em;
+    top: -.8em;
+}
+
+.keyboard .key.alt-hand .key-label {
+    background-color: orange;
+}
+
+.keyboard .key.wide .key-label {
+    left: 7.25em;
+    top: -.8em;
+}
+
+.keyboard .key.x-wide .key-label {
+    left: 13.25em;
+    top: -.8em;
+}
+
 .typed-values {
     display: flex;
     max-width: 55em;
@@ -221,4 +261,8 @@ app {
 .typed-values .value {
     margin: 5px;
     font-size: 3.2em;
+}
+
+img.keyboard-hand {
+    width: 22em;
 }

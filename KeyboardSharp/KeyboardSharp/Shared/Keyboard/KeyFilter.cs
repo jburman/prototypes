@@ -7,15 +7,23 @@ namespace KeyboardSharp
     {
         public static readonly IKeyFilter Default = new AnyKeyFilter();
 
-        private HashSet<string> _allowedKeyValues;
+        private HashSet<string> _enabledKeys;
+        private HashSet<string> _fingerLabels;
 
-        public KeyFilter(string[] allowedKeyValues)
+        public KeyFilter(string[] enabledKeys = default, string[] fingerLabels = default)
         {
-            _allowedKeyValues = new HashSet<string>(allowedKeyValues, StringComparer.OrdinalIgnoreCase);
+            if(enabledKeys != null)
+                _enabledKeys = new HashSet<string>(enabledKeys, StringComparer.OrdinalIgnoreCase);
+
+            if (fingerLabels != null)
+                _fingerLabels = new HashSet<string>(fingerLabels, StringComparer.OrdinalIgnoreCase);
         }
 
-        public bool IsAllowed(string keyValue) =>
-            _allowedKeyValues.Contains(keyValue);
+        public bool IsKeyEnabled(string keyValue) =>
+            _enabledKeys?.Contains(keyValue) ?? true;
+
+        public bool IsFingerLabelEnabled(string finger) =>
+            _fingerLabels?.Contains(finger) ?? false;
 
         private class AnyKeyFilter : IKeyFilter
         {

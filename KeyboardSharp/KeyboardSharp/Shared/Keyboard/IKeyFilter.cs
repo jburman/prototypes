@@ -2,6 +2,8 @@
 {
     public interface IKeyFilter
     {
-        bool IsAllowed(string keyValue) => true;
+        bool IsKeyEnabled(string keyValue) => true;
+
+        bool IsFingerLabelEnabled(string finger) => false;
     }
 }
