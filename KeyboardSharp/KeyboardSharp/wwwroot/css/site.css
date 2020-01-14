@@ -253,13 +253,13 @@ app {
 
 .typed-values {
     display: flex;
-    max-width: 55em;
+    width: 50em;
     overflow: hidden;
-    height: 4em;
+    height: 5em;
 }
 
 .typed-values .value {
-    margin: 5px;
+    margin-left: .25em;
     font-size: 3.2em;
 }
 

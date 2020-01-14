@@ -1,0 +1,22 @@
+﻿@page "/placement"
+
+<h3>Finger Placement</h3>
+
+<p></p>
+
+<hr />
+<TypeDisplay></TypeDisplay>
+<hr />
+<div class="row">
+    <div class="col-sm-12">
+        <USKeyboard KeyFilter="KeyFilterWithLabels"></USKeyboard>
+    </div>
+</div>
+<div style="display: flex;">
+    <div style="display: inline-block"><img class="img-fluid keyboard-hand" src="images/hand_l.png" /></div>
+    <div style="display: inline-block"><img class="img-fluid keyboard-hand" src="images/hand_r.png" /></div>
+</div>
+
+@code {
+    private IKeyFilter KeyFilterWithLabels = new KeyFilter(fingerLabels: new string[] { "1", "2", "3", "4", "5" });
+}

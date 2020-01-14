@@ -11,7 +11,7 @@
     {
         @Value
     }
-    @if(Finger != null && KeyFilter?.IsFingerLabelEnabled(Finger) == true)
+    @if(Finger != null && KeyFilter?.IsFingerLabelEnabled(Finger) == true && KeyFilter?.IsFingerLabelKeyEnabled(Value) == true)
     {
         <div class="key-label key-finger-@Finger">@Finger</div>
     }

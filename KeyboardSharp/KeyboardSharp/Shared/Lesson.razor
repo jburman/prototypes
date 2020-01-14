@@ -1,0 +1,35 @@
+﻿@if(IsStarted)
+{
+    <b>Go!</b>
+}
+else if(CountDown > 0)
+{
+    <h3>@CountDown</h3>
+}
+
+@code {
+    private bool IsStarted = false;
+    public int CountDown = 0;
+
+    public void Start()
+    {
+        CountDown = 5;
+        Task.Run(async () =>
+        {
+            while(CountDown > 0)
+            {
+                await Task.Delay(1000);
+                CountDown -= 1;
+                await InvokeAsync(() => StateHasChanged());
+            }
+            IsStarted = true;
+            await InvokeAsync(() => StateHasChanged());
+        });
+        StateHasChanged();
+    }
+
+    public void Reset()
+    {
+
+    }
+}

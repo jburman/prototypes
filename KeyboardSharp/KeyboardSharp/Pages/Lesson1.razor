@@ -1,0 +1,41 @@
+﻿@page "/lesson1"
+
+<div class="row">
+    <div class="col-sm-6">
+        <h3>Anchor keys</h3>
+
+        <p>Place your left index finger (finger #2) on the <b>f</b> key and your right index finger on the <b>j</b> key.</p>
+        <p>
+            Notice the little raised bump on each of these keys. These keys are so important that the bumps are added to help you easily find the keys
+            without having to look at them!
+        </p>
+    </div>
+</div>
+<hr />
+<Lesson @ref="lesson"></Lesson>
+<hr />
+<div>
+    <button @onclick="StartLesson">Start Lesson!</button>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <USKeyboard KeyFilter="KeyFilterWithLabels"></USKeyboard>
+    </div>
+</div>
+<div style="display: flex;">
+    <div style="display: inline-block"><img class="img-fluid keyboard-hand" src="images/hand_l.png" /></div>
+    <div style="display: inline-block"><img class="img-fluid keyboard-hand" src="images/hand_r.png" /></div>
+</div>
+
+@code {
+    private IKeyFilter KeyFilterWithLabels = new KeyFilter(
+        fingerLabels: new string[] { "2" },
+        enabledFingerLabelKeys: new string[] { "f", "j" });
+
+    Lesson lesson;
+
+    private void StartLesson()
+    {
+        lesson.Start();
+    }
+}

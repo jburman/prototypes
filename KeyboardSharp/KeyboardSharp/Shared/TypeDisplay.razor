@@ -1,12 +1,24 @@
 ﻿@namespace KeyboardSharp
 @inject KeyboardService KeyboardService
 
-<div class="typed-values">
-    @foreach(var val in TypedValues)
-    {
-        <div class="value">@val</div>
-    }
-</div>
+@*<div style="display: inline-flex;">*@
+    <div class="typed-values">
+        @if (TypedValues.Count > 0)
+        {
+            foreach (var val in TypedValues)
+            {
+                <div class="value">@val</div>
+            }
+        }
+        else
+        {
+            <div class="value"> </div>
+        }
+    </div>
+    @*<div style="display: inline-block; padding-left: 20px;">
+        <button class="btn btn-outline-dark btn-lg" @onclick="Clear">Clear</button>
+    </div>*@
+@*</div>*@
 
 @code {
     private const int MaxValues = 30;
@@ -30,6 +42,12 @@
     public void OnKeyUp(KeyboardEventArgs args)
     {
 
+    }
+
+    private void Clear()
+    {
+        TypedValues.Clear();
+        StateHasChanged();
     }
 
     protected override void OnInitialized()
